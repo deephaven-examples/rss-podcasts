@@ -29,6 +29,6 @@ The RSS feeds were initially taken from https://archive.org/download/podcastinde
 
 This app pulls RSS data from many RSS feeds using Python's [feedparser](https://pypi.org/project/feedparser/) package, and aggregates the data into Deephaven. This app is intended to run at scale, pulling from potentially millions of RSS feeds. A threading option is provided (and highly recommended to use) to improve performance.
 
-Custom methods to extract values from the RSS feed to analyze, and to extract the date-time value from the RSS feed, need to be written specifically for the RSS feed.
+Custom methods to extract values from the RSS feed, and to extract the date-time value from the RSS feed, need to be written specifically for the RSS feed. Once the data is stored in Deephaven, further queries can be used to analyze the data to figure out information like the most recently published podcasts, what podcast episodes contain certain keywords, and what podcasts produce the most number of episodes in a given period of time.
 
 This app uses podcast RSS feeds by default, but can be customized to any RSS feeds, so feel free to use this app to aggregate any RSS feeds!
