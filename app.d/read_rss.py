@@ -1,7 +1,7 @@
 """
 read_rss.py
 
-Defines the method for reading from an RSS feed and performing sentiment analysis on the data.
+Defines the method for reading from RSS feeds.
 """
 import feedparser
 from deephaven import DynamicTableWriter, Types as dht
@@ -37,53 +37,6 @@ def read_single_rss_entry(rss_feed_url):
     """
     return feedparser.parse(rss_feed_url).entries[0]
 
-
-def read_rss_static(rss_feed_url=None, rss_attributes_method=None, rss_datetime_converter=None):
-    """
-    This methods reads from an RSS feed once and stores its data
-    
-    Parameters:
-        rss_feed_url (str): The RSS feed URL as a string.
-        rss_attributes_method (method): A method that converts an RSS entry to a list of Strings to analyze. This should be
-            customized based on the RSS feed.
-        rss_datetime_converter (method): A method that takes an RSS feed entry and converts it to a Deephaven datetime object.
-            This should be customized based on the RSS feed.
-
-    Returns:
-        Table: The Deephaven table that will contain the results from the RSS feed.
-    """
-    if rss_attributes_method is None:
-        rss_attributes_method = _default_rss_attributes_method
-    if rss_datetime_converter is None:
-        rss_datetime_converter = _default_rss_datetime_converter
-
-    feed = feedparser.parse(rss_feed_url)
-
-    column_names = [
-        "Sentence",
-        "Datetime"
-    ]
-    column_types = [
-        dht.string,
-        dht.datetime
-    ]
-    table_writer = DynamicTableWriter(column_names, column_types)
-
-    i = 0
-    while i < len(feed.entries):
-        entry = feed.entries[i]
-        datetime_attribute = rss_datetime_converter(entry)
-
-        for attribute in rss_attributes_method(entry):
-            table_writer.logRow(
-                attribute,
-                datetime_attribute
-            )
-
-        i += 1
-
-    return table_writer.getTable()
-
 def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_converter=None,
         sleep_time=5, column_names=None, column_types=None, thread_count=None):
     """
@@ -92,8 +45,7 @@ def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_c
     Data is only written to the Deephaven table if it's new data. This is determined by the timestamp of the entries.
 
     This method works best with RSS feeds that are always ordered by date-time, and update frequently. Some
-    examples of this are Reddit and Hackernews RSS feeds. If you're unsure if your RSS feed will work, you can
-    play it safe and use the read_rss_static() method and build your own method.
+    examples of this are Reddit and Hackernews RSS feeds.
 
     This method is highly customizeable. rss_attributes_method, column_names, and column_types define the resulting
     Deephaven table, and rss_datetime_converter allows you to define how the datetime of the entry is computed. sleep_time
@@ -194,9 +146,9 @@ def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_c
         while thread_index < thread_count:
             table_writer = DynamicTableWriter(column_names, column_types)
             start_index = thread_index * urls_per_thread
-            #Apparently Python doesn't check index bounds on list splices [:], so this just straight up works
+            #Python doesn't check index bounds on list splices [:], so this works without needing any index checks
             thread = threading.Thread(target=thread_function, args=[rss_feed_urls[start_index:start_index + urls_per_thread], rss_attributes_method, rss_datetime_converter, sleep_time, table_writer])
             thread.start()
             thread_index += 1
             tables.append(table_writer.getTable())
-        return merge(tables) 
+        return merge(tables)
