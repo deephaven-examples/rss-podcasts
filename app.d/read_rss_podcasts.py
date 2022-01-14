@@ -8,8 +8,32 @@ variables may not be defined in here, but instead in helper_functions.py or read
 """
 import json
 
+def duration_conversion(strn):
+    #This is assuming the duration will be either MM:SS, HH:MM:SS, or just a number of seconds
+    if ":" in strn:
+        values = strn.split(":")
+        if len(values) == 3: #HH:MM:SS
+            [hours, minutes, seconds] = values
+            return (int(hours) * 3600) + (int(minutes) * 60) + int(seconds)
+        elif len(values) == 2: #MM:SS
+            [minutes, seconds] = values
+            return (int(minutes) * 60) + int(seconds)
+        else: #Unknown format
+            return None
+    elif len(strn) > 0:
+        return int(strn)
+    else:
+        return None
+
 def rss_attributes_method_podcasts(entry):
-    return (entry["title"], rss_datetime_converter_podcasts(entry), entry["title_detail"]["base"],
+    author = None
+    duration = None
+    if "author" in entry.keys():
+        author = entry["author"]
+    if "itunes_duration" in entry.keys():
+        duration = duration_conversion(entry["itunes_duration"])
+    return (entry["title"], entry["link"], duration, author,
+            rss_datetime_converter_podcasts(entry), entry["title_detail"]["base"],
             json.dumps(entry))
 
 def rss_datetime_converter_podcasts(entry):
@@ -27,11 +51,17 @@ with open("/app.d/podcast-list.txt") as f:
 
 column_names = [
     "RssEntryTitle",
+    "RssEntryLink",
+    "Duration",
+    "Author",
     "PublishDatetime",
     "RssFeedUrl",
     "JsonObject",
 ]
 column_types = [
+    dht.string,
+    dht.string,
+    dht.int_,
     dht.string,
     dht.datetime,
     dht.string,

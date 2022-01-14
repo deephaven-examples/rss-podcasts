@@ -20,7 +20,7 @@ jobs:
       - name: Run Python script
         uses: ./.github/actions/run-python-script
         with:
-          script-paths: ./python-scripts/count-urls.py
+          script-paths: ./python-scripts/queries.py
           host: localhost
       - name: Validate tables
         uses: deephaven/action-assert-dh-tables-present@v1

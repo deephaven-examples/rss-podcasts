@@ -102,8 +102,9 @@ def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_c
                         )
                     except Exception as e:
                         #Swallow exceptions for now if things go wrong, the RSS feeds aren't 100% the same format
-                        print(f"Error on reading RSS feed {rss_feed_url}")
-                        print(e)
+                        #print(f"Error on reading RSS feed {rss_feed_url}")
+                        #print(e)
+                        pass
 
                     i += 1
 
