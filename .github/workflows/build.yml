@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  schedule:
+    # Every day at 9AM EST
+    - cron:  '0 13 * * *'
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: sh start.sh -d
+      - name: Run Python script
+        uses: ./.github/actions/run-python-script
+        with:
+          script-paths: ./python-scripts/queries.py
+          host: localhost
+      - name: Validate tables
+        uses: deephaven/action-assert-dh-tables-present@v1
+        with:
+          table-names: podcast_feeds
+          host: localhost

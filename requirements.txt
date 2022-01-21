@@ -1,0 +1,9 @@
+click==8.0.3
+feedparser==6.0.8
+joblib==1.1.0
+nltk==3.6.5
+regex==2021.11.10
+sgmllib3k==1.0.0
+textblob==0.17.1
+tqdm==4.62.3
+python-dateutil==2.8.2
