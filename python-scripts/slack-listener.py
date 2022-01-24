@@ -4,15 +4,17 @@ from slack import WebClient
 
 client = WebClient(token="")
 
-def slack_notification_builder(table, slack_channel):
+def slack_notification_builder(table, slack_channel, text):
     def slack_notification(update):
         added_iterator = update.added.iterator()
         while added_iterator.hasNext():
             idx = added_iterator.nextLong()
             podcast_title = table.getColumnSource("RssEntryTitle").get(idx)
-            client.chat_postMessage(channel=slack_channel, text=f"Podcast {podcast_title} added")
+            client.chat_postMessage(channel=slack_channel, text=text.format(podcast_title=podcast_title))
     return slack_notification
 
-slack_notification = slack_notification_builder(recently_published, "")
+slack_notification_recently_published = slack_notification_builder(recently_published, "", "Podcast {podcast_title} found in recently_published table")
+recently_published_handler = listen(recently_published, slack_notification_recently_published)
 
-handle = listen(recently_published, slack_notification)
+slack_notification_christian_keywords = slack_notification_builder(christian_keywords, "", "Podcast {podcast_title} found in christian_keywords table")
+christian_keywords_handler = listen(christian_keywords, slack_notification_christian_keywords)
