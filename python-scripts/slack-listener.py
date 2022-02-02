@@ -16,5 +16,5 @@ def slack_notification_builder(table, slack_channel, text):
 slack_notification_recently_published = slack_notification_builder(recently_published, "", "Podcast {podcast_title} found in recently_published table")
 recently_published_handler = listen(recently_published, slack_notification_recently_published)
 
-slack_notification_christian_keywords = slack_notification_builder(christian_keywords, "", "Podcast {podcast_title} found in christian_keywords table")
-christian_keywords_handler = listen(christian_keywords, slack_notification_christian_keywords)
+slack_notification_tech_keywords = slack_notification_builder(tech_keywords, "", "Podcast {podcast_title} found in tech_keywords table")
+tech_keywords_handler = listen(tech_keywords, slack_notification_tech_keywords)
