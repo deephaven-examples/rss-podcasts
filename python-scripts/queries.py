@@ -4,7 +4,7 @@ from deephaven.DateTimeUtils import currentTime, convertPeriod
 url_counts = podcast_feeds.aggBy(as_list([agg.AggCountDistinct("RssFeedUrl")]), "RssFeedUrl").sumBy()
 
 author = podcast_feeds.where("Author = `Mike Kendall`")
-christian_keywords = podcast_feeds.where("RssEntryTitle.contains(`God`) || RssEntryTitle.contains(`Christ`) || RssEntryTitle.contains(`Spirit`)")
+tech_keywords = podcast_feeds.where("RssEntryTitle.contains(`Software`) || RssEntryTitle.contains(`Technology`) || RssEntryTitle.contains(`Computer`) || RssEntryTitle.contains(`Science`)")
 
 one_day = convertPeriod("1D")
 recently_published = podcast_feeds.where("PublishDatetime >= currentTime() - one_day")
