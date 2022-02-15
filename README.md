@@ -23,7 +23,8 @@ The RSS feeds were initially taken from https://archive.org/download/podcastinde
 
 ### Python scripts
 
-* [`count-urls.py`](python-scripts/count-urls.py) - A simple update query that counts how many URLs have been read by the podcast reader.
+* [`queries.py`](python-scripts/queries.py) - A query update that aggregates podcasts based on certain criteria.
+* [`slack-listener.py`](python-scripts/slack-listener.py) - An example of using a listener to send notifications to a Slack channel.
 
 ## High level overview
 
