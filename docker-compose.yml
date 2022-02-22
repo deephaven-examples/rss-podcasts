@@ -10,9 +10,11 @@ services:
       - api-cache:/cache
     environment:
       - JAVA_TOOL_OPTIONS=-Xmx4g -Ddeephaven.console.type=python -Ddeephaven.application.dir=/app.d
+      - SLACK_API_TOKEN=${SLACK_API_TOKEN}
+      - SLACK_CHANNEL=${SLACK_CHANNEL}
 
   web:
-    image: ghcr.io/deephaven/web:${VERSION:-edge}
+    image: ghcr.io/deephaven/web:${VERSION:-latest}
     expose:
       - '80'
     volumes:
@@ -20,7 +22,7 @@ services:
       - web-tmp:/tmp
 
   grpc-proxy:
-    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-edge}
+    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-latest}
     environment:
       - BACKEND_ADDR=server:8080
     depends_on:
@@ -29,7 +31,7 @@ services:
       - '8080'
 
   envoy:
-    image: ghcr.io/deephaven/envoy:${VERSION:-edge}
+    image: ghcr.io/deephaven/envoy:${VERSION:-latest}
     depends_on:
       - web
       - grpc-proxy
