@@ -10,7 +10,6 @@ The RSS feeds were initially taken from https://archive.org/download/podcastinde
 
 ### General
 
-* [`start.sh`](start.sh) - A helper script to launch the application.
 * [`docker-compose.yml`](docker-compose.yml) - The Docker compose file that defines the Deephaven images.
 * [`Dockerfile`](Dockerfile) - The Dockerfile for the application. Simply extends Deephaven's base image with dependencies and app-mode scripts.
 * [`requirements.txt`](requirements.txt) - The Python dependencies for the app.
@@ -23,8 +22,8 @@ The RSS feeds were initially taken from https://archive.org/download/podcastinde
 
 ### Python scripts
 
-* [`queries.py`](python-scripts/queries.py) - A query update that aggregates podcasts based on certain criteria.
-* [`slack-listener.py`](python-scripts/slack-listener.py) - An example of using a listener to send notifications to a Slack channel.
+* [`queries.py`](data/notebooks/queries.py) - A query update that aggregates podcasts based on certain criteria.
+* [`slack-listener.py`](data/notebooks/slack-listener.py) - An example of using a listener to send notifications to a Slack channel.
 
 ## High level overview
 
