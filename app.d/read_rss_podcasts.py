@@ -40,9 +40,9 @@ def rss_datetime_converter_podcasts(entry):
     try:
         dt = parser.parse(entry["published"])
         dts = dt.strftime("%Y-%m-%dT%H:%M:%S") + " UTC"
-        return convertDateTime(dts)
+        return to_datetime(dts)
     except:
-        return currentTime()
+        return now()
 
 podcast_feed_urls = []
 with open("/app.d/podcast-list.txt") as f:
@@ -63,7 +63,7 @@ column_types = [
     dht.string,
     dht.int_,
     dht.string,
-    dht.datetime,
+    dht.DateTime,
     dht.string,
     dht.string,
 ]

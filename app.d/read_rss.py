@@ -4,9 +4,10 @@ read_rss.py
 Defines the method for reading from RSS feeds.
 """
 import feedparser
-from deephaven import DynamicTableWriter, Types as dht
-from deephaven.TableTools import merge
-from deephaven.DateTimeUtils import convertDateTime, currentTime
+from deephaven import DynamicTableWriter
+import deephaven.dtypes as dht
+from deephaven import merge
+from deephaven.time import to_datetime, now
 from dateutil import parser
 
 import time
@@ -20,9 +21,9 @@ def _default_rss_datetime_converter(entry):
     try:
         dt = parser.parse(entry["published"])
         dts = dt.strftime("%Y-%m-%dT%H:%M:%S") + " UTC"
-        return convertDateTime(dts)
+        return to_datetime(dts)
     except:
-        return currentTime()
+        return now()
 
 def read_single_rss_entry(rss_feed_url):
     """
@@ -97,9 +98,7 @@ def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_c
                             break
 
                         write_row = rss_attributes_method(entry)
-                        table_writer.logRow(
-                            write_row
-                        )
+                        table_writer.write_row(write_row)
                     except Exception as e:
                         #Swallow exceptions for now if things go wrong, the RSS feeds aren't 100% the same format
                         #print(f"Error on reading RSS feed {rss_feed_url}")
@@ -126,9 +125,11 @@ def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_c
     if column_types is None:
         column_types = [
             dht.string,
-            dht.datetime,
+            dht.DateTime,
             dht.string
         ]
+
+    dynamic_table_writer_columns = dict(zip(column_names, column_types))
 
     if rss_attributes_method is None:
         rss_attributes_method = _default_rss_attributes_method
@@ -136,20 +137,20 @@ def read_rss_continual(rss_feed_urls, rss_attributes_method=None, rss_datetime_c
         rss_datetime_converter = _default_rss_datetime_converter
 
     if thread_count is None:
-        table_writer = DynamicTableWriter(column_names, column_types)
+        table_writer = DynamicTableWriter(dynamic_table_writer_columns)
         thread = threading.Thread(target=thread_function, args=[rss_feed_urls, rss_attributes_method, rss_datetime_converter, sleep_time, table_writer])
         thread.start()
-        return table_writer.getTable()
+        return table_writer.table
     else:
         tables = []
         thread_index = 0
         urls_per_thread = math.ceil(len(rss_feed_urls)/thread_count)
         while thread_index < thread_count:
-            table_writer = DynamicTableWriter(column_names, column_types)
+            table_writer = DynamicTableWriter(dynamic_table_writer_columns)
             start_index = thread_index * urls_per_thread
             #Python doesn't check index bounds on list splices [:], so this works without needing any index checks
             thread = threading.Thread(target=thread_function, args=[rss_feed_urls[start_index:start_index + urls_per_thread], rss_attributes_method, rss_datetime_converter, sleep_time, table_writer])
             thread.start()
             thread_index += 1
-            tables.append(table_writer.getTable())
+            tables.append(table_writer.table)
         return merge(tables)
