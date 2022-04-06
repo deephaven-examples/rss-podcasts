@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   server:
-    image: deephaven-examples/podcast-aggregation:latest
+    image: deephaven-examples/podcast-aggregation 
     expose:
       - '8080'
     volumes:
@@ -14,7 +14,7 @@ services:
       - SLACK_CHANNEL=${SLACK_CHANNEL}
 
   web:
-    image: ghcr.io/deephaven/web:${VERSION:-latest}
+    image: ghcr.io/deephaven/web:${VERSION:-edge}
     expose:
       - '80'
     volumes:
@@ -22,7 +22,7 @@ services:
       - web-tmp:/tmp
 
   grpc-proxy:
-    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-latest}
+    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-edge}
     environment:
       - BACKEND_ADDR=server:8080
     depends_on:
@@ -31,7 +31,7 @@ services:
       - '8080'
 
   envoy:
-    image: ghcr.io/deephaven/envoy:${VERSION:-latest}
+    image: ghcr.io/deephaven/envoy:${VERSION:-edge}
     depends_on:
       - web
       - grpc-proxy

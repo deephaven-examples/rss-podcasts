@@ -1,4 +1,4 @@
-from deephaven import listen
+from deephaven.table_listener import listen
 
 from slack import WebClient
 
@@ -14,7 +14,7 @@ def slack_notification_builder(table, slack_channel, text):
         added_iterator = update.added.iterator()
         while added_iterator.hasNext():
             idx = added_iterator.nextLong()
-            podcast_title = table.getColumnSource("RssEntryTitle").get(idx)
+            podcast_title = table.j_object.getColumnSource("RssEntryTitle").get(idx)
             client.chat_postMessage(channel=slack_channel, text=text.format(podcast_title=podcast_title))
     return slack_notification
 

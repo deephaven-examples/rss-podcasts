@@ -1,4 +1,4 @@
-FROM ghcr.io/deephaven/server
+FROM ghcr.io/deephaven/server:edge
 COPY requirements.txt /requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r /requirements.txt
