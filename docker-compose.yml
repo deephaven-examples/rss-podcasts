@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   server:
-    image: deephaven-examples/podcast-aggregation 
+    build: .
     expose:
       - '8080'
     volumes:
