@@ -23,7 +23,7 @@ jobs:
           script-paths: ./data/notebooks/queries.py
           host: localhost
       - name: Validate tables
-        uses: deephaven/action-assert-dh-tables-present@v1
+        uses: deephaven/action-assert-dh-tables-present@v1.1.1
         with:
           table-names: podcast_feeds
           host: localhost
