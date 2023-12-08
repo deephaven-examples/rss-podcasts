@@ -41,3 +41,7 @@ To launch the app, run
 ```
 sh start.sh
 ```
+
+## Note
+
+The code in this repository is built for Deephaven Community Core v0.12.0. No guarantee of forward or backward compatibility is given.
